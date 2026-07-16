@@ -1,0 +1,27 @@
+kind = "web"
+previewPath = "/"
+title = "QRQC Clayens"
+version = "1.0.0"
+id = "artifacts/qrqc-app"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 25739
+
+[services.development]
+run = "pnpm --filter @workspace/qrqc-app run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/qrqc-app", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/qrqc-app/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "25739"
+BASE_PATH = "/"

@@ -1,0 +1,227 @@
+[
+  {
+    "id": "QRQC-2026-0005",
+    "dateCreation": "2026-07-16T15:42:42.022Z",
+    "statut": "Cloture",
+    "etapeCourante": 8,
+    "identification": {
+      "referenceProduit": "245689",
+      "descriptionDefaut": "malklklz",
+      "pourquoiProbleme": "kuhseghuizuhf",
+      "presse": "P125",
+      "equipe": "Equipe C",
+      "detectePar": "Mohamed Z",
+      "methodeDetection": "Contrôle dimensionnel",
+      "quantiteConcernee": "450",
+      "dateDetection": "2026-07-09T23:00:00.000Z"
+    },
+    "commentaires": {
+      "texte": "jshhfudhfeuhf"
+    },
+    "ishikawa": {
+      "mainDoeuvre": [],
+      "machine": [],
+      "matiere": [
+        {
+          "id": "1784217317119-1",
+          "texte": "izuriuzejn"
+        }
+      ],
+      "methode": [],
+      "milieu": [],
+      "mesure": []
+    },
+    "actionsVerification": [
+      {
+        "id": "1784217326130-2",
+        "action": "fbdnnfd",
+        "date": "2026-07-14T23:00:00.000Z",
+        "resultat": "dfdfgfdd"
+      }
+    ],
+    "cinqPourquoi": [
+      {
+        "id": "1784217356257-4",
+        "causeInitiale": "fdfndfdf",
+        "pourquoi1": "gnfbvv",
+        "pourquoi2": "dfgbffg",
+        "pourquoi3": "fbfg",
+        "pourquoi4": "fgnf",
+        "pourquoi5": "ghnf",
+        "causeRacine": "fgnffg"
+      }
+    ],
+    "planAction": [
+      {
+        "id": "1784217405253-5",
+        "action": "dfbdgd",
+        "beneficeAttendu": "fgnfg",
+        "responsable": "hnfnf",
+        "dateLimite": "2026-07-16T23:00:00.000Z",
+        "realisee": "non"
+      }
+    ],
+    "mesureEfficacite": {
+      "metrique": "gngnf",
+      "objectif": "g ggg",
+      "controles": []
+    },
+    "cloture": {
+      "commentairesFinaux": "v fn ffn",
+      "indicateursCommePrevu": "oui",
+      "actionsSensAttendu": "oui",
+      "dateCloture": "2026-07-16T15:57:11.872Z"
+    }
+  },
+  {
+    "id": "QRQC-2026-0004",
+    "dateCreation": "2026-07-15T13:30:33.525Z",
+    "statut": "En cours",
+    "etapeCourante": 1,
+    "identification": null,
+    "commentaires": {
+      "texte": ""
+    },
+    "ishikawa": {
+      "mainDoeuvre": [],
+      "machine": [],
+      "matiere": [],
+      "methode": [],
+      "milieu": [],
+      "mesure": []
+    },
+    "actionsVerification": [],
+    "cinqPourquoi": [],
+    "planAction": [],
+    "mesureEfficacite": {
+      "metrique": "",
+      "objectif": "",
+      "controles": []
+    },
+    "cloture": {
+      "commentairesFinaux": "",
+      "indicateursCommePrevu": null,
+      "actionsSensAttendu": null,
+      "dateCloture": null
+    }
+  },
+  {
+    "id": "QRQC-2026-0003",
+    "dateCreation": "2026-07-15T12:10:21.302Z",
+    "statut": "En cours",
+    "etapeCourante": 1,
+    "identification": null,
+    "commentaires": {
+      "texte": ""
+    },
+    "ishikawa": {
+      "mainDoeuvre": [],
+      "machine": [],
+      "matiere": [],
+      "methode": [],
+      "milieu": [],
+      "mesure": []
+    },
+    "actionsVerification": [],
+    "cinqPourquoi": [],
+    "planAction": [],
+    "mesureEfficacite": {
+      "metrique": "",
+      "objectif": "",
+      "controles": []
+    },
+    "cloture": {
+      "commentairesFinaux": "",
+      "indicateursCommePrevu": null,
+      "actionsSensAttendu": null,
+      "dateCloture": null
+    }
+  },
+  {
+    "id": "QRQC-2026-0002",
+    "dateCreation": "2026-07-15T11:39:11.918Z",
+    "statut": "Cloture",
+    "etapeCourante": 8,
+    "identification": {
+      "referenceProduit": "215668",
+      "descriptionDefaut": "test test test",
+      "pourquoiProbleme": "test test testtt",
+      "presse": "P864",
+      "equipe": "Equipe B",
+      "detectePar": "Amine X",
+      "methodeDetection": "Contrôle visuel",
+      "quantiteConcernee": "500",
+      "dateDetection": "2026-07-08T23:00:00.000Z"
+    },
+    "commentaires": {
+      "texte": "kjsufhduifjsj"
+    },
+    "ishikawa": {
+      "mainDoeuvre": [],
+      "machine": [
+        {
+          "id": "1784115736397-1",
+          "texte": "plan de joint usé"
+        },
+        {
+          "id": "1784115751311-2",
+          "texte": "plan de joint encrassé"
+        }
+      ],
+      "matiere": [],
+      "methode": [],
+      "milieu": [],
+      "mesure": []
+    },
+    "actionsVerification": [
+      {
+        "id": "1784115779515-3",
+        "action": "observation outialige avant et apres nettoyage",
+        "date": "2026-07-14T23:00:00.000Z",
+        "resultat": "le moule etait propre"
+      }
+    ],
+    "cinqPourquoi": [
+      {
+        "id": "1784115858165-5",
+        "causeInitiale": "jdkd",
+        "pourquoi1": "ksjksj",
+        "pourquoi2": "slsk",
+        "pourquoi3": "lslks",
+        "pourquoi4": "kslk",
+        "pourquoi5": "",
+        "causeRacine": "lkslks"
+      }
+    ],
+    "planAction": [
+      {
+        "id": "1784115892927-6",
+        "action": "iaji",
+        "beneficeAttendu": "jnvjf",
+        "responsable": "iejie",
+        "dateLimite": "2026-07-15T23:00:00.000Z",
+        "realisee": "oui"
+      }
+    ],
+    "mesureEfficacite": {
+      "metrique": "% piece avec bavures",
+      "objectif": "0%",
+      "controles": [
+        {
+          "id": "1784115963253-8",
+          "equipe": "Equipe B",
+          "conforme": "conforme",
+          "nom": "Amine X",
+          "date": "2026-07-15T23:00:00.000Z",
+          "heure": "14:00"
+        }
+      ]
+    },
+    "cloture": {
+      "commentairesFinaux": "zkljomijmnjkh",
+      "indicateursCommePrevu": "oui",
+      "actionsSensAttendu": "oui",
+      "dateCloture": "2026-07-15T14:00:55.695Z"
+    }
+  }
+]

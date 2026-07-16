@@ -1,0 +1,412 @@
+<ng-container *ngIf="!chargement && qrqc as q">
+  <header class="wizard-header">
+    <button mat-icon-button (click)="retour()" matTooltip="Retour au tableau de bord">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <div>
+      <h1>{{ q.id }}</h1>
+      <span class="badge" [class.badge--success]="q.statut === 'Cloture'" [class.badge--warning]="q.statut === 'En cours'">
+        {{ q.statut === 'Cloture' ? 'Clôturé' : 'En cours' }}
+      </span>
+    </div>
+    <div class="spacer"></div>
+    <button mat-stroked-button [disabled]="enregistrement" (click)="enregistrer()">
+      <mat-icon>save</mat-icon>
+      Enregistrer
+    </button>
+  </header>
+
+  <mat-stepper #stepper linear [selectedIndex]="selectedIndex" class="qrqc-stepper">
+    <!-- Etape 1 : Identification du probleme -->
+    <mat-step [completed]="isStepComplete(1)" [stepControl]="step1Form" label="Identification">
+      <form [formGroup]="step1Form" class="step-form">
+        <h2>Étape 1 — Identification du problème</h2>
+        <div class="grid-2">
+          <mat-form-field>
+            <mat-label>Référence produit</mat-label>
+            <input matInput formControlName="referenceProduit" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Presse</mat-label>
+            <mat-select formControlName="presse">
+              <mat-option *ngFor="let p of presses" [value]="p">{{ p }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Équipe</mat-label>
+            <mat-select formControlName="equipe">
+              <mat-option *ngFor="let e of equipes" [value]="e">{{ e }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Détecté par</mat-label>
+            <input matInput formControlName="detectePar" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Méthode de détection</mat-label>
+            <mat-select formControlName="methodeDetection">
+              <mat-option *ngFor="let m of methodesDetection" [value]="m">{{ m }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Quantité concernée</mat-label>
+            <input matInput formControlName="quantiteConcernee" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Date de détection</mat-label>
+            <input matInput [matDatepicker]="dp1" formControlName="dateDetection" />
+            <mat-datepicker-toggle matIconSuffix [for]="dp1"></mat-datepicker-toggle>
+            <mat-datepicker #dp1></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <mat-form-field class="full-width">
+          <mat-label>Description du défaut</mat-label>
+          <textarea matInput rows="3" formControlName="descriptionDefaut"></textarea>
+        </mat-form-field>
+        <mat-form-field class="full-width">
+          <mat-label>Pourquoi ce problème est-il apparu ?</mat-label>
+          <textarea matInput rows="3" formControlName="pourquoiProbleme"></textarea>
+        </mat-form-field>
+
+        <div class="step-actions">
+          <span></span>
+          <button
+            mat-flat-button
+            color="primary"
+            [disabled]="step1Form.invalid || enregistrement"
+            (click)="suivant(1)"
+          >
+            Suivant
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Etape 2 : Commentaires -->
+    <mat-step [completed]="isStepComplete(2)" [stepControl]="step2Form" label="Commentaires">
+      <form [formGroup]="step2Form" class="step-form">
+        <h2>Étape 2 — Commentaires</h2>
+        <mat-form-field class="full-width">
+          <mat-label>Commentaires généraux</mat-label>
+          <textarea matInput rows="6" formControlName="texte"></textarea>
+        </mat-form-field>
+        <div class="step-actions">
+          <button mat-stroked-button matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon>
+            Retour
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            [disabled]="step2Form.invalid || enregistrement"
+            (click)="suivant(2)"
+          >
+            Suivant
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Etape 3 : Analyse causale (Ishikawa 6M) -->
+    <mat-step [completed]="isStepComplete(3)" label="Analyse causale">
+      <div class="step-form">
+        <h2>Étape 3 — Analyse causale (méthode des 6M)</h2>
+        <div class="ishikawa-grid">
+          <div class="ishikawa-card" *ngFor="let cat of ishikawaCategories">
+            <h3><mat-icon>{{ cat.icon }}</mat-icon>{{ cat.label }}</h3>
+            <ul class="cause-list">
+              <li *ngFor="let cause of ishikawaForms[cat.key].controls; let i = index">
+                <span>{{ cause.get('texte')?.value }}</span>
+                <button mat-icon-button (click)="retirerCause(cat.key, i)">
+                  <mat-icon>close</mat-icon>
+                </button>
+              </li>
+            </ul>
+            <div class="cause-add">
+              <input
+                type="text"
+                [(ngModel)]="nouvelleCause[cat.key]"
+                [ngModelOptions]="{ standalone: true }"
+                placeholder="Ajouter une cause..."
+                (keyup.enter)="ajouterCause(cat.key)"
+              />
+              <button mat-icon-button (click)="ajouterCause(cat.key)">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="step-actions">
+          <button mat-stroked-button matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon>
+            Retour
+          </button>
+          <button mat-flat-button color="primary" [disabled]="enregistrement" (click)="suivant(3)">
+            Suivant
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-step>
+
+    <!-- Etape 4 : Actions de verification -->
+    <mat-step [completed]="isStepComplete(4)" label="Actions de vérification">
+      <div class="step-form">
+        <h2>Étape 4 — Actions de vérification</h2>
+        <div class="list-editor" *ngFor="let action of step4Actions.controls; let i = index" [formGroup]="asGroup(action)">
+          <div class="grid-3">
+            <mat-form-field>
+              <mat-label>Action</mat-label>
+              <input matInput formControlName="action" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Date</mat-label>
+              <input matInput [matDatepicker]="dpa" formControlName="date" />
+              <mat-datepicker-toggle matIconSuffix [for]="dpa"></mat-datepicker-toggle>
+              <mat-datepicker #dpa></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Résultat</mat-label>
+              <input matInput formControlName="resultat" />
+            </mat-form-field>
+          </div>
+          <button mat-icon-button (click)="retirerActionVerification(i)">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+        <button mat-stroked-button (click)="ajouterActionVerification()">
+          <mat-icon>add</mat-icon>
+          Ajouter une action de vérification
+        </button>
+        <div class="step-actions">
+          <button mat-stroked-button matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon>
+            Retour
+          </button>
+          <button mat-flat-button color="primary" [disabled]="enregistrement" (click)="suivant(4)">
+            Suivant
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-step>
+
+    <!-- Etape 5 : Recherche cause racine (5 pourquoi) -->
+    <mat-step [completed]="isStepComplete(5)" label="5 Pourquoi">
+      <div class="step-form">
+        <h2>Étape 5 — Recherche de la cause racine (5 Pourquoi)</h2>
+        <div class="pourquoi-block" *ngFor="let p of step5Pourquoi.controls; let i = index" [formGroup]="asGroup(p)">
+          <div class="pourquoi-header">
+            <mat-form-field class="full-width">
+              <mat-label>Cause initiale</mat-label>
+              <input matInput formControlName="causeInitiale" />
+            </mat-form-field>
+            <button mat-icon-button (click)="retirerPourquoi(i)">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </div>
+          <div class="pourquoi-chain">
+            <mat-form-field><mat-label>Pourquoi 1 ?</mat-label><input matInput formControlName="pourquoi1" /></mat-form-field>
+            <mat-form-field><mat-label>Pourquoi 2 ?</mat-label><input matInput formControlName="pourquoi2" /></mat-form-field>
+            <mat-form-field><mat-label>Pourquoi 3 ?</mat-label><input matInput formControlName="pourquoi3" /></mat-form-field>
+            <mat-form-field><mat-label>Pourquoi 4 ?</mat-label><input matInput formControlName="pourquoi4" /></mat-form-field>
+            <mat-form-field><mat-label>Pourquoi 5 ?</mat-label><input matInput formControlName="pourquoi5" /></mat-form-field>
+          </div>
+          <mat-form-field class="full-width">
+            <mat-label>Cause racine identifiée</mat-label>
+            <input matInput formControlName="causeRacine" />
+          </mat-form-field>
+        </div>
+        <button mat-stroked-button (click)="ajouterPourquoi()">
+          <mat-icon>add</mat-icon>
+          Ajouter une chaîne des 5 pourquoi
+        </button>
+        <div class="step-actions">
+          <button mat-stroked-button matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon>
+            Retour
+          </button>
+          <button mat-flat-button color="primary" [disabled]="enregistrement" (click)="suivant(5)">
+            Suivant
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-step>
+
+    <!-- Etape 6 : Plan d'action -->
+    <mat-step [completed]="isStepComplete(6)" label="Plan d'action">
+      <div class="step-form">
+        <h2>Étape 6 — Plan d'action</h2>
+        <div class="list-editor" *ngFor="let a of step6Plan.controls; let i = index" [formGroup]="asGroup(a)">
+          <div class="grid-3">
+            <mat-form-field>
+              <mat-label>Action</mat-label>
+              <input matInput formControlName="action" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Bénéfice attendu</mat-label>
+              <input matInput formControlName="beneficeAttendu" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Responsable</mat-label>
+              <input matInput formControlName="responsable" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Date limite</mat-label>
+              <input matInput [matDatepicker]="dpb" formControlName="dateLimite" />
+              <mat-datepicker-toggle matIconSuffix [for]="dpb"></mat-datepicker-toggle>
+              <mat-datepicker #dpb></mat-datepicker>
+            </mat-form-field>
+          </div>
+          <mat-radio-group formControlName="realisee" class="oui-non">
+            <mat-radio-button value="oui">Réalisée</mat-radio-button>
+            <mat-radio-button value="non">Non réalisée</mat-radio-button>
+          </mat-radio-group>
+          <button mat-icon-button (click)="retirerActionPlan(i)">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+        <button mat-stroked-button (click)="ajouterActionPlan()">
+          <mat-icon>add</mat-icon>
+          Ajouter une action au plan
+        </button>
+        <div class="step-actions">
+          <button mat-stroked-button matStepperPrevious>
+            <mat-icon>arrow_back</mat-icon>
+            Retour
+          </button>
+          <button mat-flat-button color="primary" [disabled]="enregistrement" (click)="suivant(6)">
+            Suivant
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </div>
+    </mat-step>
+
+    <!-- Etape 7 : Mesure d'efficacite -->
+    <mat-step [completed]="isStepComplete(7)" [stepControl]="step7Form" label="Mesure d'efficacité">
+      <form [formGroup]="step7Form" class="step-form">
+        <h2>Étape 7 — Mesure d'efficacité</h2>
+        <div class="grid-2">
+          <mat-form-field>
+            <mat-label>Métrique suivie</mat-label>
+            <input matInput formControlName="metrique" placeholder="Ex : taux de rebut" />
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Objectif</mat-label>
+            <input matInput formControlName="objectif" placeholder="Ex : &lt; 0.5%" />
+          </mat-form-field>
+        </div>
+
+        <h3 class="section-title">Contrôles réalisés</h3>
+        <div class="list-editor" *ngFor="let c of step7Controles.controls; let i = index" [formGroup]="asGroup(c)">
+          <div class="grid-3">
+            <mat-form-field>
+              <mat-label>Équipe</mat-label>
+              <mat-select formControlName="equipe">
+                <mat-option *ngFor="let e of equipes" [value]="e">{{ e }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Conformité</mat-label>
+              <mat-select formControlName="conforme">
+                <mat-option value="conforme">Conforme</mat-option>
+                <mat-option value="non-conforme">Non conforme</mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Contrôlé par</mat-label>
+              <input matInput formControlName="nom" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Date</mat-label>
+              <input matInput [matDatepicker]="dpc" formControlName="date" />
+              <mat-datepicker-toggle matIconSuffix [for]="dpc"></mat-datepicker-toggle>
+              <mat-datepicker #dpc></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Heure</mat-label>
+              <input matInput type="time" formControlName="heure" />
+            </mat-form-field>
+          </div>
+          <button mat-icon-button (click)="retirerControle(i)">
+            <mat-icon>delete_outline</mat-icon>
+          </button>
+        </div>
+        <button mat-stroked-button type="button" (click)="ajouterControle()">
+          <mat-icon>add</mat-icon>
+          Ajouter un contrôle
+        </button>
+
+        <div class="step-actions">
+          <button mat-stroked-button matStepperPrevious type="button">
+            <mat-icon>arrow_back</mat-icon>
+            Retour
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            [disabled]="step7Form.invalid || enregistrement"
+            (click)="suivant(7)"
+          >
+            Suivant
+            <mat-icon>arrow_forward</mat-icon>
+          </button>
+        </div>
+      </form>
+    </mat-step>
+
+    <!-- Etape 8 : Cloture -->
+    <mat-step [completed]="isStepComplete(8)" [stepControl]="step8Form" label="Clôture">
+      <form [formGroup]="step8Form" class="step-form">
+        <h2>Étape 8 — Clôture du dossier</h2>
+        <mat-form-field class="full-width">
+          <mat-label>Commentaires finaux</mat-label>
+          <textarea matInput rows="4" formControlName="commentairesFinaux"></textarea>
+        </mat-form-field>
+
+        <div class="oui-non-block">
+          <span class="oui-non-label">Les indicateurs ont-ils évolué comme prévu ?</span>
+          <mat-radio-group formControlName="indicateursCommePrevu" class="oui-non">
+            <mat-radio-button value="oui">Oui</mat-radio-button>
+            <mat-radio-button value="non">Non</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="oui-non-block">
+          <span class="oui-non-label">Les actions ont-elles eu l'effet attendu ?</span>
+          <mat-radio-group formControlName="actionsSensAttendu" class="oui-non">
+            <mat-radio-button value="oui">Oui</mat-radio-button>
+            <mat-radio-button value="non">Non</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <div class="step-actions">
+          <button mat-stroked-button matStepperPrevious type="button">
+            <mat-icon>arrow_back</mat-icon>
+            Retour
+          </button>
+          <button
+            mat-flat-button
+            color="primary"
+            type="button"
+            [disabled]="step8Form.invalid || enregistrement"
+            (click)="cloturer()"
+          >
+            <mat-icon>task_alt</mat-icon>
+            Clôturer le dossier
+          </button>
+        </div>
+      </form>
+    </mat-step>
+  </mat-stepper>
+</ng-container>
+
+<div class="loading" *ngIf="chargement">
+  <mat-icon>hourglass_top</mat-icon>
+  Chargement du dossier...
+</div>

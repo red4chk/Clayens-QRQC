@@ -1,0 +1,157 @@
+<section class="hero">
+  <div>
+    <h1>Tableau de bord QRQC</h1>
+    <p class="subtitle">
+      Suivi des dossiers Quick Response Quality Control — création,
+      consultation et pilotage des actions correctives.
+    </p>
+  </div>
+  <button
+    mat-flat-button
+    color="primary"
+    class="cta"
+    [disabled]="creation"
+    (click)="creerNouveauQrqc()"
+  >
+    <mat-icon>add_circle</mat-icon>
+    Créer un nouveau QRQC
+  </button>
+</section>
+
+<section class="stats" *ngIf="stats as s">
+  <div class="stat-card">
+    <span class="stat-value">{{ s.total }}</span>
+    <span class="stat-label">Dossiers au total</span>
+  </div>
+  <div class="stat-card stat-card--warning">
+    <span class="stat-value">{{ s.enCours }}</span>
+    <span class="stat-label">En cours</span>
+  </div>
+  <div class="stat-card stat-card--success">
+    <span class="stat-value">{{ s.clotures }}</span>
+    <span class="stat-label">Clôturés</span>
+  </div>
+</section>
+
+<section class="filters">
+  <mat-form-field class="filter-search">
+    <mat-label>Rechercher</mat-label>
+    <input
+      matInput
+      [formControl]="search"
+      placeholder="ID, référence, description, presse..."
+    />
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Presse</mat-label>
+    <mat-select [formControl]="presseFiltre">
+      <mat-option value="">Toutes</mat-option>
+      <mat-option *ngFor="let p of presses" [value]="p">{{ p }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Équipe</mat-label>
+    <mat-select [formControl]="equipeFiltre">
+      <mat-option value="">Toutes</mat-option>
+      <mat-option *ngFor="let e of equipes" [value]="e">{{ e }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Statut</mat-label>
+    <mat-select [formControl]="statutFiltre">
+      <mat-option value="">Tous</mat-option>
+      <mat-option value="En cours">En cours</mat-option>
+      <mat-option value="Cloture">Clôturé</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <button mat-stroked-button (click)="reinitialiserFiltres()">
+    <mat-icon>filter_alt_off</mat-icon>
+    Réinitialiser
+  </button>
+</section>
+
+<section class="table-wrap">
+  <table mat-table [dataSource]="dossiers" class="qrqc-table">
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>N° Dossier</th>
+      <td mat-cell *matCellDef="let d">{{ d.id }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dateCreation">
+      <th mat-header-cell *matHeaderCellDef>Créé le</th>
+      <td mat-cell *matCellDef="let d">
+        {{ d.dateCreation | date: 'dd/MM/yyyy' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="reference">
+      <th mat-header-cell *matHeaderCellDef>Référence produit</th>
+      <td mat-cell *matCellDef="let d">
+        {{ d.identification?.referenceProduit || '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="presse">
+      <th mat-header-cell *matHeaderCellDef>Presse</th>
+      <td mat-cell *matCellDef="let d">
+        {{ d.identification?.presse || '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="equipe">
+      <th mat-header-cell *matHeaderCellDef>Équipe</th>
+      <td mat-cell *matCellDef="let d">
+        {{ d.identification?.equipe || '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="etape">
+      <th mat-header-cell *matHeaderCellDef>Étape</th>
+      <td mat-cell *matCellDef="let d">{{ d.etapeCourante }} / 8</td>
+    </ng-container>
+
+    <ng-container matColumnDef="statut">
+      <th mat-header-cell *matHeaderCellDef>Statut</th>
+      <td mat-cell *matCellDef="let d">
+        <span
+          class="badge"
+          [class.badge--success]="d.statut === 'Cloture'"
+          [class.badge--warning]="d.statut === 'En cours'"
+        >
+          {{ d.statut === 'Cloture' ? 'Clôturé' : 'En cours' }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let d" (click)="$event.stopPropagation()">
+        <button
+          mat-icon-button
+          matTooltip="Supprimer"
+          (click)="supprimer($event, d)"
+        >
+          <mat-icon>delete_outline</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="columns"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: columns"
+      (click)="ouvrir(row)"
+      class="qrqc-row"
+    ></tr>
+  </table>
+
+  <div class="empty-state" *ngIf="!chargement && dossiers.length === 0">
+    <mat-icon>inbox</mat-icon>
+    <p>Aucun dossier QRQC ne correspond à ces critères.</p>
+  </div>
+</section>

@@ -1,0 +1,30 @@
+{
+  "name": "@workspace/qrqc-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "ng serve --port 4200 --host 0.0.0.0 --disable-host-check --proxy-config proxy.conf.json",
+    "build": "ng build --output-path dist/public --base-href $BASE_PATH --deploy-url $BASE_PATH",
+    "typecheck": "tsc -p tsconfig.app.json --noEmit"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "18.2.21",
+    "@angular/animations": "18.2.13",
+    "@angular/cdk": "18.2.14",
+    "@angular/cli": "18.2.21",
+    "@angular/common": "18.2.13",
+    "@angular/compiler": "18.2.13",
+    "@angular/compiler-cli": "18.2.13",
+    "@angular/core": "18.2.13",
+    "@angular/forms": "18.2.13",
+    "@angular/material": "18.2.14",
+    "@angular/platform-browser": "18.2.13",
+    "@angular/platform-browser-dynamic": "18.2.13",
+    "@angular/router": "18.2.13",
+    "@types/node": "catalog:",
+    "rxjs": "^7.8.1",
+    "tslib": "^2.6.3",
+    "typescript": "5.5.4",
+    "zone.js": "~0.14.10"
+  }
+}

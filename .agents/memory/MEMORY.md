@@ -1,0 +1,3 @@
+- [Angular in a react-vite artifact shell](angular-in-replit-artifact.md) — how to run a real Angular CLI app under Replit's artifact/workflow system when a project requires Angular-only.
+- [Angular Material 18 M2 theming](angular-material-18-m2-theming.md) — legacy palette/theme functions moved under an `m2-` prefix; old names silently don't exist.
+- [esbuild bundling breaks import.meta.dirname paths](esbuild-bundle-path-resolution.md) — resolve runtime file paths from `process.cwd()`, not `import.meta.dirname`, once esbuild flattens `src/**` into one bundle file.
